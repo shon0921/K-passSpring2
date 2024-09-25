@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="kopo.poly.mapper.IMovieMapper">
+
+    <!-- 수집된 내용 DB에 등록 -->
+    <insert id="insertMovieInfo" parameterType="MovieDTO">
+        insert into MOVIE_INFO
+        (COLLECT_TIME,
+         SEQ,
+         MOVIE_RANK,
+         MOVIE_NM,
+         MOVIE_RESERVE,
+         SCORE,
+         OPEN_DAY,
+         REG_ID,
+         CHG_ID)
+        values (#{collectTime},
+                (select nvl(max(A.SEQ), 0) + 1 from MOVIE_INFO A WHERE A.COLLECT_TIME = #{collectTime}),
+                #{movieRank},
+                #{movieNm},
+                #{movieReserve},
+                #{score},
+                #{openDay},
+                #{regId},
+                #{regId})
+    </insert>
+
+    <!-- DB에 저장된 영화 순위 삭제하기 -->
+    <insert id="deleteMovieInfo" parameterType="MovieDTO">
+        delete
+        from MOVIE_INFO
+        where COLLECT_TIME = #{collectTime}
+    </insert>
+
+    <!-- 영화 정보 조회 -->
+    <select id="getMovieInfo" parameterType="MovieDTO" resultType="MovieDTO">
+        select COLLECT_TIME,
+               SEQ,
+               MOVIE_RANK,
+               MOVIE_NM,
+               MOVIE_RESERVE,
+               SCORE,
+               OPEN_DAY,
+               REG_ID,
+               CHG_ID
+        from MOVIE_INFO
+        where COLLECT_TIME like CONCAT(#{collectTime}, '%')
+        order by MOVIE_RANK asc
+    </select>
+</mapper>

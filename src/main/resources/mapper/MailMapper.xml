@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="kopo.poly.mapper.IMailMapper">
+
+    <!-- 수집된 내용 DB에 등록 -->
+    <insert id="insertMail" parameterType="MailDTO">
+        insert into MAIL
+        (SEQ, TITLE, CONTENTS, TO_MAIL, FROM_MAIL, SEND_DT)
+        values (
+                (select NULLIF(MAX(A.seq),0)+1 from MAIL A),
+                #{title}, #{contents}, #{toMail}, #{fromMail}, now()
+               )
+    </insert>
+
+
+    <!-- 메일 업로드 -->
+    <select id="getMailList" parameterType="MailDTO" resultType="MailDTO">
+        select SEQ, TITLE, CONTENTS, TO_MAIL, FROM_MAIL,
+               TO_CHAR(SEND_DT, 'YYYY-MM-DD HH24:MI:SS') AS sandDt
+        from MAIL
+        order by SEND_DT desc
+    </select>
+</mapper>
