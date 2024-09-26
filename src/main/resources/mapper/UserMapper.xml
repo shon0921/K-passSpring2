@@ -28,6 +28,12 @@
 		(#{id2},#{email2},#{password2},NOW())
 	</insert>
 
+	<update id="updatePassword2" parameterType="UserDTO">
+		update USER1
+		set PASSWORD2 = #{password2}
+		where ID2 = #{id2}
+	</update>
+
 	<select id="getLogin" parameterType="UserInfoDTO" resultType="UserInfoDTO">
 		select USER_ID, USER_NAME, EMAIL
 		from USER_INFO
@@ -38,21 +44,14 @@
 	<!-- 아이디, 비밀번호 찾기에 활용
 	1. 이름과 이메일이 맞다면, 아이디 알려주기
 	2. 아이디, 이름과 이메일이 맞다면, 비밀번호 재설정하기 -->
-	<select id="getUserId" parameterType="UserInfoDTO" resultType="UserInfoDTO">
-		select USER_ID,USER_NAME,EMAIL
-		from USER_INFO
+	<select id="getUserId2" parameterType="UserDTO" resultType="UserDTO">
+		select ID2,EMAIL2
+		from USER1
 		where 1=1
-		<if test="userId neq null and userId neq '' ">
-			and USER_ID = #{userId}
+		<if test="id2 neq null and id2 neq '' ">
+			and ID2 = #{id2}
 		</if>
-		and USER_NAME = #{userName}
-		and EMAIL = #{email}
+		and EMAIL2 = #{email2}
 	</select>
 
-	<!-- 비밀번호 재설성 -->
-	<update id="updatePassword" parameterType="UserInfoDTO">
-		update USER_INFO
-		set PASSWORD = #{password}
-		where USER_ID = #{userId}
-	</update>
 </mapper>
