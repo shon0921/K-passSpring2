@@ -13,4 +13,8 @@ public interface IUserMapper {
     UserDTO getUserIdExists(UserDTO pDTO) throws Exception;
 
     UserDTO getUserEmailExists(UserDTO pDTO) throws Exception;
+
+    int updatePassword2(UserDTO pDTO) throws Exception; // 비밀번호 변경
+
+    UserDTO getUserId2(UserDTO pDTO) throws Exception;  // 아이디 비밀번호 찾기에 활용
 }

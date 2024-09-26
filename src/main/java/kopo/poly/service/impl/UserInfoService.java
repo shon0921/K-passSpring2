@@ -179,7 +179,7 @@ public class UserInfoService implements IUserinfoService {
     @Override
     public int newPasswordProc(UserInfoDTO pDTO) throws Exception {
 
-        log.info("{}.newPasswordProc Starrt!",this.getClass().getName());
+        log.info("{}.newPasswordProc Start!",this.getClass().getName());
 
         // 비밀번호 재설정
         int success = userInfoMapper.updatePassword(pDTO);

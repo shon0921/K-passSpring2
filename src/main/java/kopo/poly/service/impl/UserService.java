@@ -119,4 +119,32 @@ public class UserService implements IUserService {
 
         return res;
     }
+
+    // 비밀번호 변경
+    @Override
+    public int newPasswordProc2(UserDTO pDTO) throws Exception {
+
+        log.info("{}.newPasswordProc Start!",this.getClass().getName());
+
+        // 비밀번호 재설정
+        int success = userMapper.updatePassword2(pDTO);
+
+        log.info("{}.newPasswordProc End!", this.getClass().getName());
+
+        return success;
+    }
+
+    // 아이디 비밀번호 찾기 로직
+    @Override
+    public UserDTO searchUserIdOrPasswordProc2(UserDTO pDTO) throws Exception {
+
+        log.info("{}.searchUserIdOrPasswordProc Start!",this.getClass().getName());
+
+        UserDTO rDTO = userMapper.getUserId2(pDTO);
+
+        log.info("{}.searchUserIdOrPasswordProc End!",this.getClass().getName());
+
+        return rDTO;
+
+    }
 }
