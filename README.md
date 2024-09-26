@@ -1,4 +1,4 @@
 # K-passSpring2
 
 
-새로 다운받아서 application.properties 수정할것
+새로 다운받을때마다 application.properties 확인 후 수정할것
