@@ -13,13 +13,13 @@
     <title>회원가입</title>
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/sb-admin-2.min.css">
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         // 아이디 중복체크여부 (중복 Y / 중복아님 : N)
@@ -34,6 +34,9 @@
             $("#bthSend").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
                 doSubmit();
             });
+            $("#bthpassword").on("click",function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                location.href = "/title/forgotPassword";
+            })
         });
 
         // 회원가입 정보의 유효성 체크하기
@@ -166,7 +169,7 @@
 
     <!-- 로고를 카드 외부에 위치 -->
     <div class="logo-container">
-        <img src="img/logo1.png" alt="Logo"> <!-- 로고 이미지 경로 설정 -->
+        <img src="/img/logo1.png" alt="Logo"> <!-- 로고 이미지 경로 설정 -->
     </div>
 
     <!-- Outer Row -->
@@ -210,7 +213,7 @@
                                 </form>
                                 <hr>
                                 <div class="text-center">
-                                    <a class="small" href="forgot-password.html">비밀번호 찾기</a>
+                                    <a class="small" id="bthpassword" >비밀번호 찾기</a>
                                 </div>
                                 <div class="text-center">
                                     <a class="small" href="login.html">로그인</a>

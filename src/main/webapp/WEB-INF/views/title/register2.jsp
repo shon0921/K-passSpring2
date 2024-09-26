@@ -18,7 +18,7 @@
           rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="/css/sb-admin-2.min.css" rel="stylesheet">
   <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
 
@@ -62,7 +62,7 @@
 
           if (json.result === 1) {    // 회원가입 성공
             alert(json.msg);    // 메시지 띄우기
-            location.href = "title/login";   // 로그인 페이지 이동
+            location.href = "login";   // 로그인 페이지 이동
 
           } else {    // 회원가입 실패
             alert(json.msg);
@@ -97,7 +97,7 @@
                         placeholder="Enter Verification Code">
               </div>
               <!-- Submit Code -->
-              <button id="bthSend" type="button">이메일 인증</button>
+              <button id="bthSend" type="button" class="btn btn-primary btn-user btn-block">이메일 인증</button>
               <hr>
               <!-- Resend Verification Code -->
               <a href="#" id="resendButton" class="btn btn-secondary btn-user btn-block" onclick="resendCode()">
