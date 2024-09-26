@@ -29,20 +29,27 @@
         let emailAuthNumber = "";
 
         $(document).ready(function () {
-            let f = document.getElementById("f"); // form 태그
-            let s = document.getElementById("s");
+
             // 아이디,이메일 중복체크
             $("#bthSend").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-                doSubmit(f);
+                doSubmit();
             });
         });
 
         // 회원가입 정보의 유효성 체크하기
-        function doSubmit(f) {
+        function doSubmit() {
+
+            const f = document.getElementById("f");
 
             if (f.userId.value === "") {
                 alert("아이디를 입력하세요.");
                 f.userId.focus();
+                return;
+            }
+
+            if (f.email.value === "") {
+                alert("이메일을 입력하세요.");
+                f.email.focus();
                 return;
             }
 
@@ -62,11 +69,7 @@
                 f.password.focus();
                 return;
             }
-            if (f.email.value === "") {
-                alert("이메일을 입력하세요.");
-                f.email.focus();
-                return;
-            }
+
 
             $.ajax({
                 url: "/title/getUserIDEmailExists",
@@ -80,6 +83,7 @@
                     if (json.existsYn === "Y") {
                         alert("이미 사용 중인 아이디입니다.");
                         f.userId.focus();  // 아이디 입력란으로 포커스 이동
+                        userIdCheck="Y";
                     } else {
                         userIdCheck ="N";
                         }
@@ -87,24 +91,27 @@
                 }
             )
             if (userIdCheck === "N") {
-                // 이메일만 전송하는 부분
-                const emailData = $("#f").serializeArray().filter(function(field) {
-                    return field.name === "email";  // email 필드만 전송
-                });
 
                 $.ajax({
                     url: "/title/getUserEmailExists",
                     type: "post",   //  전송방식은 Post
                     dataType: "json",   // 전송 결과는 JSON으로 받기
                     async: false,   // 동기식 실행
-                    data: $.param(emailData),  // 이메일만 전송
+                    data: $("#f").serialize(),  // 이메일만 전송
                     success: function (json) {  // 호출이 성공했다면..
                         if (json.existsYn === "Y") {
                             alert("이미 가입된 이메일 주소가 존재합니다 ");
                             f.email.focus();  // 이메일 입력란으로 포커스 이동
+                            userIdCheck="Y";
                         } else {
                             emailAuthNumber = json.authNumber;
-                            window.location.href = "register2.jsp"
+
+                            sessionStorage.setItem('userId', f.userId.value);   //값 저장
+                            sessionStorage.setItem('email', f.email.value);
+                            sessionStorage.setItem('password', f.password.value);
+                            sessionStorage.setItem('authNumber', json.authNumber);
+
+                            location.href = "register2";    //이동
                         }
                     }
                 });

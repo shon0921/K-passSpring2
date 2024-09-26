@@ -30,7 +30,7 @@ public class UserService implements IUserService {
 
         log.info("{}.getUserIdExists Start!", this.getClass().getName());
 
-        // DB 이메일이 존재하는지 SQL 쿼리 실행
+        // DB 아이디가 존재하는지 SQL 쿼리 실행
         UserDTO rDTO = userMapper.getUserIdExists(pDTO);
 
         log.info("{}.getUserIdExists End!", this.getClass().getName());

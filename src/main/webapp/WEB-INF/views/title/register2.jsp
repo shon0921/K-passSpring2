@@ -20,6 +20,59 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
   <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
+
+    let emailAuthNumber = sessionStorage.getItem('authNumber');  // 저장된 인증번호 가져오기
+
+    $(document).ready(function () {
+
+      //회원가입
+      $("#bthSend").on("click",function (){ // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+        doSubmit();
+      })
+
+
+    });
+
+    function doSubmit() {
+      const f = document.getElementById("f");
+      const enteredAuthNumber = f.authNumber.value;
+
+      if (enteredAuthNumber === "") {
+        alert("이메일 인증번호를 입력하세요.");
+        f.authNumber.focus();
+        return;
+      }
+
+      if (enteredAuthNumber !== emailAuthNumber) {
+        alert("이메일 인증번호가 일치하지 않습니다.");
+        f.authNumber.focus();
+        return;
+
+      }
+      $.ajax({
+        url: "/title/insertUser",
+        type: "post",   // 전송방식은 Post
+        dataType: "json",   // 전송 결과는 json으로 받기
+        data: {
+        userId: sessionStorage.getItem('userId'),
+              email: sessionStorage.getItem('email'),
+              password: sessionStorage.getItem('password')},// form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
+        success: function (json) {  // /notice/noticeUpdate 호출이 성공했다면..
+
+          if (json.result === 1) {    // 회원가입 성공
+            alert(json.msg);    // 메시지 띄우기
+            location.href = "title/login";   // 로그인 페이지 이동
+
+          } else {    // 회원가입 실패
+            alert(json.msg);
+          }
+
+        }
+      })
+    }
+
+  </script>
 </head>
 
 <body class="bg-gradient-primary">
@@ -37,16 +90,14 @@
               <h1 class="h4 text-gray-900 mb-4">Verify Your Email Address</h1>
               <p class="mb-4">Enter the verification code sent to your email address.</p>
             </div>
-            <form class="user">
+            <form id="f" class="user">
               <!-- Verification Code Input -->
               <div class="form-group">
-                <input type="text" class="form-control form-control-user" id="exampleInputCode"
-                       placeholder="Enter Verification Code">
+                <input type="text" name="authNumber" class="form-control form-control-user" id="authNumber"
+                        placeholder="Enter Verification Code">
               </div>
               <!-- Submit Code -->
-              <a href="verification-success.html" class="btn btn-primary btn-user btn-block">
-                Verify Account
-              </a>
+              <button id="bthSend" type="button">이메일 인증</button>
               <hr>
               <!-- Resend Verification Code -->
               <a href="#" id="resendButton" class="btn btn-secondary btn-user btn-block" onclick="resendCode()">

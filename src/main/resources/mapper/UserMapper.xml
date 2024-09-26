@@ -5,7 +5,7 @@
 <mapper namespace="kopo.poly.mapper.IUserMapper">
 
 	<!-- 아이디 중복 확인-->
-	<select id="getUserIDEmailExists" parameterType="UserDTO" resultType="UserDTO">
+	<select id="getUserIdExists" parameterType="UserDTO" resultType="UserDTO">
 		select
 			if(count(ID2) > 0, 'Y','N') as EXISTS_YN
 		from USER1
