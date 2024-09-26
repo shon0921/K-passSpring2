@@ -126,8 +126,8 @@ public class UserInfoController {
             log.info("userName : "+ userName);
             log.info("password : "+ password);
             log.info("email : "+ email);
-            //log.info("addr1 : "+ addr1);
-            //log.info("addr2 : "+ addr2);
+            log.info("addr1 : "+ addr1);
+            log.info("addr2 : "+ addr2);
 
             /*
                 웹(회원정보 입력화면)에서 받는 정보를 DTO에 저장하기 시작!!
@@ -172,7 +172,7 @@ public class UserInfoController {
             }
         } catch (Exception e) {
             // 저저장이 실패되면 사용자에게 보여줄 메시지
-            msg = "실해하였습니다. : " +e;
+            msg = "실패하였습니다. : " +e;
             log.info(e.toString());
 
         } finally {

@@ -10,5 +10,7 @@ public interface IUserMapper {
     int insertUserInfo2(UserDTO pDTO) throws Exception;
 
     // 회원 가입전 아이디 이메일 둘다 중복체크하기(DB조회)
-    UserDTO getUserIDEmailExists(UserDTO pDTO) throws Exception;
+    UserDTO getUserIdExists(UserDTO pDTO) throws Exception;
+
+    UserDTO getUserEmailExists(UserDTO pDTO) throws Exception;
 }

@@ -3,7 +3,6 @@ package kopo.poly.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import kopo.poly.dto.MsgDTO;
 import kopo.poly.dto.UserDTO;
-import kopo.poly.dto.UserInfoDTO;
 import kopo.poly.service.IUserService;
 import kopo.poly.util.CmmUtil;
 import kopo.poly.util.EncryptUtil;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -34,52 +32,55 @@ public class UserController {
         return "/title/register";
     }
 
+    @GetMapping(value = "register2")
+    public String register2() {
+        log.info("{}.title/register2",this.getClass().getName());
+
+        return "title/register2";
+    }
+
+    // 아이디 중복체크
     @ResponseBody
     @PostMapping(value = "getUserIDEmailExists")
     public UserDTO getUserIDEmailExists(HttpServletRequest request) throws Exception {
 
-        log.info("{}.getUserIdAndEmailExists Start!", this.getClass().getName());
+        log.info("{}.getUserIdExists Start!",this.getClass().getName());
 
         String userId = CmmUtil.nvl(request.getParameter("userId")); // 회원아이디
-        String email = CmmUtil.nvl(request.getParameter("email"));   // 이메일
 
         log.info("userId : {}", userId);
-        log.info("email : {}", email);
 
-        UserDTO rDTO = new UserDTO();  // UserDTO 인스턴스 생성
+        UserDTO pDTO = new UserDTO();
+        pDTO.setId2(userId);
 
         // 회원아이디를 통해 중복된 아이디인지 조회
-        UserDTO userIdCheckDTO = Optional.ofNullable(userService.getUserIDEmailExists(new UserDTO())).orElseGet(UserDTO::new);
-        userIdCheckDTO.setId2(userId); // 조회할 아이디 설정
+        UserDTO rDTO = Optional.ofNullable(userService.getUserIDEmailExists(pDTO)).orElseGet(UserDTO::new);
 
-        // 아이디 중복 여부 확인
-        if (userIdCheckDTO.getId2() != null) {
-            log.info("아이디가 중복되었습니다: {}", userId);
-            rDTO.setExistsYn("Y");  // 중복 아이디 표시
-            rDTO.setId2(userId);    // 중복된 아이디 설정
-        } else {
-            rDTO.setExistsYn("N");  // 중복되지 않은 경우
+        log.info("{}.getUserIdExists End!", this.getClass().getName());
 
-            // 이메일 중복 체크 수행
-            UserDTO emailDTO = new UserDTO();
-            emailDTO.setEmail2(EncryptUtil.encAES128CBC(email)); // 암호화된 이메일 설정
+        return rDTO;
+    }
 
-            // 입력된 이메일이 중복된 이메일인지 조회
-            UserDTO emailCheckDTO = Optional.ofNullable(userService.getUserIDEmailExists(emailDTO)).orElseGet(UserDTO::new);
+    // 이메일 중복 조회
+    @ResponseBody
+    @PostMapping(value = "getUserEmailExists")
+    public UserDTO getUserEmailExists(HttpServletRequest request) throws Exception {
 
-            // 이메일 중복 체크 결과 설정
-            if (emailCheckDTO.getEmail2() != null) {
-                rDTO.setExistsYn("Y"); // 이메일도 중복된 경우
-            } else {
-                rDTO.setExistsYn("N"); // 이메일 중복이 없는 경우
+        log.info("{}.getUserEmailExists Start!", this.getClass().getName());
 
-                rDTO.setRedirectUrl("/email-v.jsp");
-            }
-        }
+        String email = CmmUtil.nvl(request.getParameter("email"));  // 회원아이디
 
-        log.info("{}.getUserIdAndEmailExists End!", this.getClass().getName());
+        log.info("email : {}", email);
 
-        return rDTO;  // UserDTO 반환
+        UserDTO pDTO = new UserDTO();
+        pDTO.setEmail2(EncryptUtil.encAES128CBC(email));
+
+        // 입력된 이메일이 중복된 이메일인지 조회
+        UserDTO rDTO = Optional.ofNullable(userService.getUserEmailExists(pDTO)).orElseGet(UserDTO::new);
+
+        log.info("{}.getUserEmailExists End!", this.getClass().getName());
+
+        return rDTO;
     }
 
     @ResponseBody

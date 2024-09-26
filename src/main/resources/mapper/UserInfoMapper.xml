@@ -5,7 +5,7 @@
 <mapper namespace="kopo.poly.mapper.IUserInfoMapper">
 
 	<!-- 회원 가입 전 아이디 중복체크하기 -->
-	<select id="getUserIDEmailExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
+	<select id="getUserIdExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
 		select
 		    if(count(USER_ID) > 0, 'Y', 'N') AS EXISTS_YN
 		from USER_INFO
@@ -21,7 +21,7 @@
 	</select>
 
 	<!--회원 가입하기(회원정보 등록하기) -->
-	<insert id="insertUserInfo2" parameterType="UserInfoDTO">
+	<insert id="insertUserInfo" parameterType="UserInfoDTO">
 		insert into USER_INFO
 		(USER_ID, USER_NAME, PASSWORD, EMAIL, ADDR1, ADDR2, REG_ID, REG_DT, CHG_ID, CHG_DT)
 		value

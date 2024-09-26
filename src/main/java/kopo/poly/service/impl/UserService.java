@@ -24,46 +24,55 @@ public class UserService implements IUserService {
 
     private final IMailService mailService; // 메일발송 객체 가져오기
 
-    //아이디 이메일 중복체크
+    //아이디 중복체크
     @Override
     public UserDTO getUserIDEmailExists(UserDTO pDTO) throws Exception {
 
-        log.info("{}.getUserIdOrEmailExists Start!", this.getClass().getName());
+        log.info("{}.getUserIdExists Start!", this.getClass().getName());
 
-        // DB에서 아이디 또는 이메일이 존재하는지 확인하는 SQL 쿼리 실행
-        UserDTO rDTO = Optional.ofNullable(userMapper.getUserIDEmailExists(pDTO)).orElseGet(UserDTO::new);
+        // DB 이메일이 존재하는지 SQL 쿼리 실행
+        UserDTO rDTO = userMapper.getUserIdExists(pDTO);
+
+        log.info("{}.getUserIdExists End!", this.getClass().getName());
+
+        return rDTO;
+
+        }
+
+
+    @Override
+    public UserDTO getUserEmailExists(UserDTO pDTO) throws Exception {
+        log.info("{}.emailAuth Start!", this.getClass().getName());
+
+        // DB 이메일이 존재하는지 SQL 쿼리 실행
+        UserDTO rDTO = Optional.ofNullable(userMapper.getUserEmailExists(pDTO)).orElseGet(UserDTO::new);
 
         log.info("rDTO : {}", rDTO);
 
-        // 아이디나 이메일 중복 확인
-        String existsYn = CmmUtil.nvl(rDTO.getExistsYn());
-        switch (existsYn) {
-            case "USER_ID_EXISTS" -> log.info("아이디가 중복되었습니다.");
-            case "EMAIL_EXISTS" -> log.info("이메일이 중복되었습니다.");
-            case "NONE" -> {
-                log.info("이메일,아이디가 중복되지 않음, 인증번호 발송 절차 시작.");
+        // 이메일 주소가 중복되지 않는다면 메일 발송
+        if (CmmUtil.nvl(rDTO.getExistsYn()).equals("N")) {
 
-                // 이메일 중복되지 않으면 인증번호 발송
-                int authNumber = ThreadLocalRandom.current().nextInt(100000, 999999);
-                log.info("authNumber : {}", authNumber);
+            // 6 자리 랜덤 숫자 생성하기
+            int authNumber = ThreadLocalRandom.current().nextInt(100000,999999);
 
-                // 인증번호 발송 로직
-                MailDTO dto = new MailDTO();
-                dto.setTitle("이메일 중복 확인 인증번호 발송 메일");
-                dto.setContents("인증번호는 " + authNumber + " 입니다.");
-                dto.setToMail(EncryptUtil.decAES128CBC(CmmUtil.nvl(pDTO.getEmail2())));
+            log.info("authNumber : {}", authNumber);
 
-                mailService.doSendMail(dto);  // 이메일 발송
+            // 인증번호 발송 로직
+            MailDTO dto = new MailDTO();
 
+            dto.setTitle("이메일 중복 확인 인증번호 발송 메일");
+            dto.setContents("인증번호는 "+authNumber+" 입니다.");
+            dto.setToMail(EncryptUtil.decAES128CBC(CmmUtil.nvl(pDTO.getEmail2())));
 
-                dto = null;
+            mailService.doSendMail(dto);    // 이메일 발송
 
-                // 인증번호를 결과값에 넣어줌
-                rDTO.setAuthNumber(authNumber);
-            }
+            dto = null;
+
+            rDTO.setAuthNumber(authNumber); // 인증번호를 결과값에 넣어주기
+
         }
 
-        log.info("{}.getUserIdOrEmailExists End!", this.getClass().getName());
+        log.info("{}.emailAuth End!",this.getClass().getName());
 
         return rDTO;
     }

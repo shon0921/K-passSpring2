@@ -30,7 +30,7 @@
 
         $(document).ready(function () {
             let f = document.getElementById("f"); // form 태그
-
+            let s = document.getElementById("s");
             // 아이디,이메일 중복체크
             $("#bthSend").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
                 doSubmit(f);
@@ -72,6 +72,7 @@
                 url: "/title/getUserIDEmailExists",
                 type: "post",   //  전송방식은 Post
                 dataType: "json",   // 전송 결과는 JSON으로 받기
+                async: false,   // 동기식 실행
                 data: $("#f").serialize(),  // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
                 success: function (json) {  // 호출이 성공했다면..
 
@@ -80,23 +81,34 @@
                         alert("이미 사용 중인 아이디입니다.");
                         f.userId.focus();  // 아이디 입력란으로 포커스 이동
                     } else {
-                        // 이메일 중복 확인
-                        if (json.existsYn === "Y") {
-                            alert("이미 가입된 이메일 주소가 존재합니다.");
-                            f.email.focus();  // 이메일 입력란으로 포커스 이동
-                        } else {
-                            alert("이메일로 인증번호가 발송되었습니다. \n받은 메일의 인증번호를 입력하기 바랍니다.");
-                            emailAuthNumber = json.authNumber;  // 인증번호 저장
-
-                            // 리디렉션 처리
-                            if (json.redirectUrl) {
-                                window.location.href = json.redirectUrl; // 지정한 URL로 이동
-                            }
-
+                        userIdCheck ="N";
                         }
                     }
                 }
-            })
+            )
+            if (userIdCheck === "N") {
+                // 이메일만 전송하는 부분
+                const emailData = $("#f").serializeArray().filter(function(field) {
+                    return field.name === "email";  // email 필드만 전송
+                });
+
+                $.ajax({
+                    url: "/title/getUserEmailExists",
+                    type: "post",   //  전송방식은 Post
+                    dataType: "json",   // 전송 결과는 JSON으로 받기
+                    async: false,   // 동기식 실행
+                    data: $.param(emailData),  // 이메일만 전송
+                    success: function (json) {  // 호출이 성공했다면..
+                        if (json.existsYn === "Y") {
+                            alert("이미 가입된 이메일 주소가 존재합니다 ");
+                            f.email.focus();  // 이메일 입력란으로 포커스 이동
+                        } else {
+                            emailAuthNumber = json.authNumber;
+                            window.location.href = "register2.jsp"
+                        }
+                    }
+                });
+            }
         }
 
     </script>
